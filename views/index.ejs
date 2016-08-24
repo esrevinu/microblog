@@ -1,30 +1,12 @@
+<% if (!user) { %>
 <div class="jumbotron">
     <h1>欢迎来到 Microblog</h1>
     <p>Microblog 是一个基于 Node.js 的微博系统。 </p>
-    <!--TODO-->
     <p>
         <a class="btn btn-primary btn-large" href="/login">登录</a>
         <a class="btn btn-large" href="/reg">立即注册</a>
     </p>
 </div>
-<div class="row">
-    <div class="col-md-4">
-        <h2>柏拉图 说</h2>
-        <p>衡量一個人得看他擁有力量時的所做所為</p>
-    </div>
-    <div class="col-md-4">
-        <h2>昼颜 说</h2>
-        <p>
-            Neveragain 永无重聚<br/>
-            I’ll love someone else 找个人，爱难替<br/>
-            Please be mine till the end 请你永远属於我<br/>
-            This is our last night I’m fallin’in love 别时夜，缱绻难去<br/>
-            your lips，your soul，your eyes， 你的唇，你的魂，你的眼神<br/>
-            your arms，your hairs, your heart 你的臂弯，你的发梢，你的心<br/>
-            our love, our mind 恋念痴缠的，是我们 </p>
-    </div>
-    <div class="col-md-4">
-        <h2>庄子 说</h2>
-        <p>天下皆知美之为美，斯恶矣；皆知善之为善，斯不善已 </p>
-    </div>
-</div>
+<% } else { %>
+<%- partial('say') %>
+<% } %>
