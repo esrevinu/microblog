@@ -1,9 +1,97 @@
 var express = require('express');
 var router = express.Router();
+var crypto = require('crypto');
+var User = require('../models/User');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Sven' });
+router.get('/', function(req, res) {
+  res.render('index', { title: '首页' });
 });
+// GET register page
+router.get('/reg',checkNotLogin);
+router.get('/reg', function(req, res) {
+  res.render('reg', { title: '用户注册' });
+});
+//POST register page
+router.post('/reg',checkNotLogin);
+router.post('/reg', function(req, res) {
+  //Check the repeated password is the same as the first one
+  if(req.body['password-repeat']!=req.body['password']){
+    req.flash('error','两次输入的密码不一致');
+    return res.redirect('/reg');
+  }
+  var md5 = crypto.createHash('md5');
+  var password = md5.update(req.body.password).digest('base64');
+  var newUser = new User({
+      name:req.body.username,
+      password:password
+  });
+  //Check if the username has existed
+  User.get(newUser.name,function(err,user){
+      if(user)
+          err = 'Username already exists.';
+      if(err){
+          req.flash('error',err);
+          return res.redirect('/reg');
+      }
+      //If doesn't exist then add new user
+      newUser.save(function(err){
+          if(err){
+              req.flash('error',err);
+              return res.redirect('/reg');
+          }
+          req.session.user = newUser;
+          req.flash('success','注册成功');
+          res.redirect('/');
+      });
+  })
+});
+
+//GET login page
+router.get('/login',checkNotLogin);
+router.get('/login', function(req, res) {
+    res.render('login', { title: '用户登录' });
+});
+//POST login page
+router.post('/login',checkNotLogin);
+router.post('/login', function(req, res) {
+    var md5 = crypto.createHash('md5');
+    var password = md5.update(req.body.password).digest('base64');
+    User.get(req.body.username, function(err, user) {
+        if (!user) {
+            req.flash('error', '用户不存在');
+            return res.redirect('/login');
+        }
+        if (user.password != password) {
+            req.flash('error', '用户口令错误');
+            return res.redirect('/login');
+        }
+        req.session.user = user;
+        req.flash('success', '登入成功');
+        res.redirect('/');
+    });
+});
+//GET logout page
+router.get('/logout',checkLogin);
+router.get('/logout', function(req, res) {
+    req.session.user = null;
+    req.flash('success', '登出成功');
+    res.redirect('/');
+});
+
+function checkLogin(req, res, next) {
+    if (!req.session.user) {
+        req.flash('error', '未登入');
+        return res.redirect('/login');
+    }
+    next();
+}
+function checkNotLogin(req, res, next) {
+    if (req.session.user) {
+        req.flash('error', '已登入');
+        return res.redirect('/');
+    }
+    next();
+}
 
 module.exports = router;
