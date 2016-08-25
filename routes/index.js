@@ -10,18 +10,16 @@ router.get('/', function(req, res) {
         if (err) {
             posts = [];
         }
-
-        console.log("WTF"+posts.length);
         res.render('index', {
-            title: '首页',
-            posts: posts,
+            title: res.locals.titles[0],
+            posts: posts
         });
     });
 });
 // GET register page
 router.get('/reg',checkNotLogin);
 router.get('/reg', function(req, res) {
-  res.render('reg', { title: '用户注册' });
+  res.render('reg', { title: '注册' });
 });
 //POST register page
 router.post('/reg',checkNotLogin);
@@ -61,7 +59,7 @@ router.post('/reg', function(req, res) {
 //GET login page
 router.get('/login',checkNotLogin);
 router.get('/login', function(req, res) {
-    res.render('login', { title: '用户登录' });
+    res.render('login', { title: '登录' });
 });
 //POST login page
 router.post('/login',checkNotLogin);

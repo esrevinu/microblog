@@ -41,6 +41,7 @@ app.use(function(req,res,next){
   //TODO Optimize
   var error = req.flash('error');
   var success = req.flash('success');
+  res.locals.titles = ['首页','登录','注册','登出'];
   res.locals.user = req.session.user;
   res.locals.error = error.length?error:null;
   res.locals.success = success.length?success:null;
