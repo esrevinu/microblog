@@ -40,11 +40,10 @@ User.get = function get(username,callback){
                 mongodb.close();
                 return callback(err);
             }
-            // 查找 name 属性为 username 的文档 TODO
-            collection.findOne({name: username}, function(err, doc) {
+            collection.find({name: username}).limit(1).next(function(err, doc) {
                 mongodb.close();
                 if (doc) {
-                // 封装文档为 User 对象
+                    // 封装文档为 User 对象
                     var user = new User(doc);
                     callback(err, user);
                 } else {

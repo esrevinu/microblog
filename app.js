@@ -6,11 +6,21 @@ var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var bodyParser = require('body-parser');
 var partials = require('express-partials');
-// var MongoStore = require('connect-mongo')(express);
+var MongoStore = require('connect-mongo')(expressSession);
 var settings = require('./setting');
 var flash = require('connect-flash');
-
 var routes = require('./routes/index');
+var fs = require('fs');
+fs.stat('logs', function(err, stat) {
+  if(err == null) {
+    return;
+  } else {
+    fs.mkdirSync('logs', 0755);
+  }
+});
+
+var morgan = require('morgan')
+var accessLogStream = fs.createWriteStream('logs/access.log',{flag:'a'});
 
 var app = express();
 
@@ -19,7 +29,8 @@ app.set('views', path.join(__dirname, 'views'));
 //Use ejs as view engine
 app.set('view engine', 'ejs');
 app.use(partials());
-
+//Add log config(morgan)
+app.use(morgan('combined',{stream:accessLogStream}));
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -30,10 +41,10 @@ app.use(flash());
 app.use(expressSession({
   secret:settings.cookieSecret,
   resave: false,
-  saveUninitialized: true
-  // store: new MongoStore({
-  //   db:settings.db
-  // })
+  saveUninitialized: true,
+  store: new MongoStore({
+    url:'mongodb://'+settings.host+'/'+settings.db
+  })
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 //Replace app.dynamicHelpers
