@@ -39,7 +39,7 @@ Post.prototype.save = function save(callback) {
         });
     });
 };
-Post.get = function get(username, callback) {
+Post.get = function get(q, callback) {
     mongodb.open(function(err, db) {
         if (err) {
             return callback(err);
@@ -50,12 +50,7 @@ Post.get = function get(username, callback) {
                 mongodb.close();
                 return callback(err);
             }
-            // 查找 user 属性为 username 的文档，如果 username 是 null 则匹配全部
-            var query = {};
-            if (username) {
-                query.user = username;
-            }
-            collection.find(query).sort({time: -1}).toArray(function(err, docs) {
+            collection.find(q).sort({time: -1}).toArray(function(err, docs) {
                 mongodb.close();
                 if (err) {
                     callback(err, null);

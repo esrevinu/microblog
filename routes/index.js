@@ -108,7 +108,9 @@ router.get('/u/:user', function(req, res) {
             req.flash('error', '用户不存在');
             return res.redirect('/');
         }
-        Post.get(user.name, function(err, posts) {
+        var q = {};
+        q.user = user.name;
+        Post.get(q, function(err, posts) {
             if (err) {
                 req.flash('error', err);
                 return res.redirect('/');
@@ -117,6 +119,29 @@ router.get('/u/:user', function(req, res) {
                 title: user.name,
                 posts: posts
             });
+        });
+    });
+});
+//GET search page
+router.get('/search', function(req, res) {
+    var query = req.query.query;
+    var q={};
+    q.post = new RegExp("^.*"+query+".*$");
+    Post.get(q, function(err, posts) {
+        if (err) {
+            req.flash('error', err);
+            return res.redirect('/');
+        }
+        // var postsFormatted = posts.map(function(obj){
+        //     var regExp = new RegExp(query, 'gi');
+        //     var rObj = JSON.parse(JSON.stringify( obj ) );
+        //     rObj.post = obj.post.replace(regExp,'<code>'+query+'</code>');
+        //     return rObj;
+        // });
+        // console.log(postsFormatted);
+        res.render('index', {
+            title: res.locals.titles[0],
+            posts: posts
         });
     });
 });

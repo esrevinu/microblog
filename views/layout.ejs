@@ -36,26 +36,27 @@
                                 <li><a href="logout"><%= titles[3] %></a></li>
                             </ul>
                         </li>
-
                     <% } %>
                     </ul>
-                <!--<form class="navbar-form navbar-right">-->
-                    <!--<div class="form-group">-->
-                        <!--<input type="text" class="form-control" placeholder="Search">-->
-                    <!--</div>-->
-                    <!--<button type="submit" class="btn btn-default">Submit</button>-->
-                <!--</form>-->
+                <form class="navbar-form navbar-right" action="/search">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="请输入关键字" id="query" name="query">
+                    </div>
+                    <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                </form>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
     <div id="container" class="container">
         <% if(success) { %>
-        <div class="alert alert-success">
+        <div class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <%= success %>
         </div>
         <% } %>
         <% if(error) { %>
-        <div class="alert alert-danger">
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <%= error %>
         </div>
         <% } %>
