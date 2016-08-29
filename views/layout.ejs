@@ -62,10 +62,13 @@
         <% } %>
         <%- body %>
         <hr />
-        <footer>
-            <p><a href="http://www.sven.com/" target="_blank">Sven</a> 2016</p>
-        </footer>
+
     </div>
+    <footer class="footer">
+        <div class="container">
+            <p class="text-muted">Total <strong><%= count %></strong> persons online | <a href="http://www.sven.com/" target="_blank">Sven</a></p>
+        </div>
+    </footer>
 </body>
 <script src="/javascripts/jquery.js"></script>
 <script src="/javascripts/bootstrap.js"></script>

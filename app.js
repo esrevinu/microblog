@@ -5,6 +5,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var bodyParser = require('body-parser');
+var redis = require('redis');
+var redisClient = redis.createClient();
 var partials = require('express-partials');
 var MongoStore = require('connect-mongo')(expressSession);
 var settings = require('./setting');
@@ -47,8 +49,23 @@ app.use(expressSession({
   })
 }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(function(req, res, next){
+  var ua = req.headers['user-agent'];
+  redisClient.zadd('online', Date.now(), ua, next);
+});
+
 //Replace app.dynamicHelpers
 app.use(function(req,res,next){
+  //Add online count in last 60 seconds
+  var min = 60 * 1000;
+  var ago = Date.now() - min;
+  redisClient.zrevrangebyscore('online', '+inf', ago, function(err, users){
+    if (err) return next(err);
+    // req.online = users;
+    res.locals.count = users.length;
+  });
+
   //TODO Optimize
   var error = req.flash('error');
   var success = req.flash('success');
@@ -56,6 +73,7 @@ app.use(function(req,res,next){
   res.locals.user = req.session.user;
   res.locals.error = error.length?error:null;
   res.locals.success = success.length?success:null;
+
   next();
 });
 //Add routes
