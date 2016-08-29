@@ -132,16 +132,15 @@ router.get('/search', function(req, res) {
             req.flash('error', err);
             return res.redirect('/');
         }
-        // var postsFormatted = posts.map(function(obj){
-        //     var regExp = new RegExp(query, 'gi');
-        //     var rObj = JSON.parse(JSON.stringify( obj ) );
-        //     rObj.post = obj.post.replace(regExp,'<code>'+query+'</code>');
-        //     return rObj;
-        // });
-        // console.log(postsFormatted);
+        var postsFormatted = posts.map(function(obj){
+            var regExp = new RegExp(query, 'gi');
+            var rObj = JSON.parse(JSON.stringify( obj ) );
+            rObj.post = obj.post.replace(regExp,'<code>'+query+'</code>');
+            return rObj;
+        });
         res.render('index', {
             title: res.locals.titles[0],
-            posts: posts
+            posts: postsFormatted
         });
     });
 });

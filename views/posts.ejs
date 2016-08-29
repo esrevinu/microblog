@@ -5,7 +5,7 @@ if (i % 3 == 0) { %>
     <div class="col-md-4">
         <h2><a href="/u/<%= posts[i].user %>"><%= posts[i].user %></a> 说</h2>
         <p><small><%= posts[i].time %></small></p>
-        <p><%= posts[i].post %></p>
+        <p><%- posts[i].post %></p>
     </div>
     <% if (i % 3 == 2) { %>
 </div><!-- end row -->
